@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Underworld</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* ── SCENE ENTER — fall into darkness, hellfire gradually reveals ── */
+        .scene {
+            position: relative;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            animation: hellSettle 1.6s ease-out forwards;
+        }
+        @keyframes hellSettle {
+            from { filter: brightness(0.05) blur(8px) sepia(1); transform: scale(1.08) translateY(-4%); }
+            to   { filter: brightness(1)    blur(0)   sepia(0); transform: scale(1)    translateY(0); }
+        }
+
+        /* ── HELL BACKGROUND ── */
+        .hell-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                #000000  0%,
+                #060000  12%,
+                #100000  25%,
+                #220000  40%,
+                #450400  57%,
+                #7a0e00  72%,
+                #b02000  86%,
+                #cc2800  100%
+            );
+        }
+
+        /* ── LAVA GLOW AT BOTTOM ── */
+        .lava-glow {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 30%;
+            background: radial-gradient(ellipse at 50% 100%, rgba(220,80,10,0.55) 0%, rgba(160,30,0,0.28) 50%, transparent 80%);
+            animation: lavaFlicker 3.5s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes lavaFlicker {
+            from { opacity: 0.75; }
+            to   { opacity: 1; }
+        }
+
+        /* ── SMOKE LAYERS ── */
+        .smoke {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(18,8,8,0.55), transparent);
+            filter: blur(36px);
+            pointer-events: none;
+            animation: smokeDrift ease-in-out infinite alternate;
+        }
+        .smoke-1 { width: 60vw; height: 28vh; bottom: 20%; left: -8%;  animation-duration: 20s; }
+        .smoke-2 { width: 55vw; height: 22vh; bottom: 35%; right: -5%; animation-duration: 26s; animation-delay: 4s; }
+        .smoke-3 { width: 70vw; height: 32vh; bottom: 14%; left: 15%;  animation-duration: 18s; animation-delay: 2s; }
+        @keyframes smokeDrift {
+            from { transform: translateX(0)    scaleY(1);    opacity: 0.6; }
+            to   { transform: translateX(6vw)  scaleY(1.1);  opacity: 1;   }
+        }
+
+        /* ── ROCKY SILHOUETTES ── */
+        .rocks-wrap {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 55%;
+            pointer-events: none;
+        }
+        .rocks-wrap svg {
+            width: 100%; height: 100%;
+        }
+
+        /* ── EMBER ── */
+        .ember {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: emberRise linear infinite;
+        }
+        @keyframes emberRise {
+            0%   { transform: translateY(0) translateX(0); opacity: 0; }
+            8%   { opacity: 1; }
+            85%  { opacity: 0.6; }
+            100% { transform: translateY(-80vh) translateX(var(--drift)); opacity: 0; }
+        }
+
+        /* ── VIGNETTE ── */
+        .vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%);
+            pointer-events: none;
+        }
+
+        /* ── DOORWAY ── */
+        .door-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .door-frame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: clamp(240px, 32vw, 340px);
+            opacity: 0;
+            animation: doorReveal 1s 1.2s ease-out forwards;
+        }
+        @keyframes doorReveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .door-arch {
+            width: 100%;
+            height: clamp(130px, 17vw, 200px);
+            border: 1px solid #881c10;
+            border-bottom: none;
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aa2a16;
+            background: rgba(8,0,0,0.55);
+            box-shadow: 0 0 28px rgba(200,60,20,0.20), inset 0 0 40px rgba(100,10,0,0.15);
+        }
+        .door-body {
+            width: 100%;
+            border: 1px solid #881c10;
+            border-top: none;
+            padding: 24px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            background: rgba(8,0,0,0.55);
+        }
+        .door-input {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88rem;
+            letter-spacing: 0.5em;
+            text-align: center;
+            color: #cc4422;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #881c10;
+            width: 100%;
+            padding: 8px 0;
+            outline: none;
+            caret-color: #cc4422;
+        }
+        .door-input::placeholder { color: rgba(204,68,34,0.3); }
+        .door-error {
+            font-family: 'Cinzel', serif;
+            font-size: 0.66rem;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: rgba(220,100,60,0.85);
+            opacity: 0;
+            transition: opacity 0.3s;
+            min-height: 16px;
+        }
+        .door-proceed {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.70rem, 1.5vw, 0.85rem);
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: #cc4422;
+            background: transparent;
+            border: 1px solid #881c10;
+            padding: 0.75em 2.4em;
+            cursor: pointer;
+            transition: color 0.4s, border-color 0.4s, box-shadow 0.4s;
+            margin-top: 4px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .door-proceed:hover {
+            color: #ff7755;
+            border-color: #aa3322;
+            box-shadow: 0 0 22px rgba(200,60,20,0.45);
+        }
+        @keyframes inputShake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-6px); }
+            40%       { transform: translateX(6px); }
+            60%       { transform: translateX(-4px); }
+            80%       { transform: translateX(4px); }
+        }
+        .door-input.shake { animation: inputShake 0.45s ease-in-out; }
+
+        /* ── EXIT OVERLAY — fades to black ── */
+        #exit-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: #000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.7s ease;
+        }
+
+        @media (max-width: 600px) {
+            .door-frame   { width: clamp(200px, 82vw, 280px); }
+            .door-proceed { font-size: 0.70rem; letter-spacing: 0.28em; padding: 0.65em 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div id="exit-overlay"></div>
+
+    <div class="scene" id="scene">
+        <div class="hell-bg"></div>
+
+        <!-- Smoke -->
+        <div class="smoke smoke-1"></div>
+        <div class="smoke smoke-2"></div>
+        <div class="smoke smoke-3"></div>
+
+        <!-- Rocky silhouettes -->
+        <div class="rocks-wrap">
+            <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice"
+                 xmlns="http://www.w3.org/2000/svg">
+                <!-- Far layer — dark crimson -->
+                <path fill="rgba(20,2,2,0.70)"
+                    d="M0,500 L0,310 L90,280 L180,305 L260,250 L340,272 L430,225
+                       L510,248 L600,200 L680,228 L770,188 L850,215 L940,172
+                       L1020,200 L1110,158 L1200,186 L1300,148 L1440,175 L1440,500 Z"/>
+                <!-- Near layer — near-black -->
+                <path fill="rgba(6,0,0,0.95)"
+                    d="M0,500 L0,380 L70,350 L150,368 L220,325 L310,342 L390,298
+                       L480,318 L560,278 L650,302 L740,262 L830,288 L920,248
+                       L1010,275 L1100,235 L1190,262 L1300,225 L1390,250 L1440,238
+                       L1440,500 Z"/>
+            </svg>
+        </div>
+
+        <!-- Lava glow -->
+        <div class="lava-glow"></div>
+
+        <div class="vignette"></div>
+
+        <div class="door-wrap">
+            <div class="door-frame" id="doorFrame">
+                <div class="door-arch">
+                    <svg viewBox="0 0 32 38" width="40" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.55">
+                        <path d="M16,4 C8,4 5,11 5,18 C5,24 8,27 11,29 L11,34 L21,34 L21,29 C24,27 27,24 27,18 C27,11 24,4 16,4 Z"/>
+                        <ellipse cx="11" cy="18" rx="3" ry="4"/>
+                        <ellipse cx="21" cy="18" rx="3" ry="4"/>
+                        <line x1="14" y1="29" x2="14" y2="34"/>
+                        <line x1="18" y1="29" x2="18" y2="34"/>
+                    </svg>
+                </div>
+                <div class="door-body">
+                    <input type="password" class="door-input" id="doorInput" placeholder="· · · ·" maxlength="12" autocomplete="off">
+                    <div class="door-error" id="doorError">denied</div>
+                    <button class="door-proceed" id="doorProceed">proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ── EMBERS ── */
+        const scene = document.getElementById('scene');
+
+        function spawnEmber() {
+            const el    = document.createElement('div');
+            el.className = 'ember';
+            const sz    = 1 + Math.random() * 2.5;
+            const dur   = 5 + Math.random() * 9;
+            const r     = (200 + Math.random() * 55) | 0;
+            const g     = (40  + Math.random() * 80) | 0;
+            const drift = ((Math.random() * 60 - 30) | 0) + 'px';
+            el.style.cssText = [
+                `width:${sz}px`,
+                `height:${sz}px`,
+                `left:${Math.random() * 100}%`,
+                `bottom:${Math.random() * 18}%`,
+                `background:rgba(${r},${g},8,0.92)`,
+                `box-shadow:0 0 ${sz * 2.5}px ${sz}px rgba(${r},${g},8,0.50)`,
+                `--drift:${drift}`,
+                `animation-duration:${dur}s`,
+                `animation-delay:${(Math.random() * -dur).toFixed(1)}s`
+            ].join(';');
+            scene.appendChild(el);
+            setTimeout(() => el.remove(), (dur + 2) * 1000);
+        }
+
+        for (let i = 0; i < 40; i++) setTimeout(spawnEmber, i * 80);
+        setInterval(spawnEmber, 500);
+
+        /* ── DOORWAY ── */
+        const doorInput   = document.getElementById('doorInput');
+        const doorError   = document.getElementById('doorError');
+        const doorProceed = document.getElementById('doorProceed');
+
+        function tryEnter() {
+            if (doorInput.value === '1234') {
+                const exit = document.getElementById('exit-overlay');
+                exit.style.opacity = '1';
+                exit.style.pointerEvents = 'all';
+                setTimeout(() => { window.location.href = 'mountain.html'; }, 750);
+            } else {
+                doorInput.classList.remove('shake');
+                void doorInput.offsetWidth;
+                doorInput.classList.add('shake');
+                doorError.style.opacity = '1';
+                doorInput.value = '';
+                setTimeout(() => {
+                    doorError.style.opacity = '0';
+                    doorInput.classList.remove('shake');
+                }, 1400);
+            }
+        }
+
+        doorProceed.addEventListener('click', tryEnter);
+        doorInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryEnter(); });
+    </script>
+</body>
+</html>

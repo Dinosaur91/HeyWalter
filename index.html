@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Call Beyond</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,487 +12,316 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #060d1f;
+            background: #000;
         }
 
-        /* ── SCENE ── */
-        .scene {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            animation: sceneFadeIn 2.8s ease-out forwards;
-        }
-
-        @keyframes sceneFadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        /* ── SKY ── */
-        .sky {
-            position: absolute;
+        /* ── CANVAS ── */
+        #mistCanvas {
+            position: fixed;
             inset: 0;
-            background: linear-gradient(
-                to bottom,
-                #060d1f  0%,
-                #0e1f3e  18%,
-                #1b2d5c  32%,
-                #2b3972  46%,
-                #57437e  58%,
-                #a06068  68%,
-                #cd7c50  78%,
-                #e8a06a  86%,
-                #f5c88a  93%,
-                #fde0b8 100%
-            );
-        }
-
-        /* ── MOON ── */
-        .moon {
-            position: absolute;
-            top: 9%;
-            right: 22%;
-            width: clamp(50px, 5.5vw, 86px);
-            height: clamp(50px, 5.5vw, 86px);
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at 38% 38%,
-                #fffdf2,
-                #fff0cc 40%,
-                #f6d98c 80%,
-                #e8c572 100%
-            );
-            box-shadow:
-                0 0 28px 10px rgba(255,235,160,0.45),
-                0 0 65px 28px rgba(255,215,120,0.25),
-                0 0 115px 52px rgba(255,200,100,0.12),
-                0 0 190px 85px rgba(255,185,80,0.06);
-        }
-
-        /* ── STARS ── */
-        #starCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 65%;
-            pointer-events: none;
-        }
-
-        /* ── MOUNTAINS ── */
-        .mountains-wrap {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80%;
-            pointer-events: none;
-        }
-        .mountains-wrap svg {
             width: 100%;
             height: 100%;
         }
 
-        /* ── CSS MIST OVERLAYS ── */
-        .mist-base {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 28%;
-            background: linear-gradient(
-                to top,
-                rgba(210,225,248,0.78) 0%,
-                rgba(205,222,244,0.46) 35%,
-                rgba(200,218,240,0.18) 65%,
-                transparent 100%
-            );
-            filter: blur(12px);
+        /* ── MIST OVERLAY LAYERS ── */
+        .mist-layer {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .mist-layer:nth-child(1) {
+            width: 70vw; height: 40vh;
+            background: radial-gradient(ellipse, #1a1a2a 0%, transparent 70%);
+            top: 20%; left: -10%;
+            animation: mistDrift1 14s ease-in-out infinite, mistAppear 5s 1.5s ease-out forwards;
+        }
+        .mist-layer:nth-child(2) {
+            width: 60vw; height: 35vh;
+            background: radial-gradient(ellipse, #111120 0%, transparent 70%);
+            top: 50%; left: 40%;
+            animation: mistDrift2 18s ease-in-out infinite, mistAppear 5s 2.5s ease-out forwards;
+        }
+        .mist-layer:nth-child(3) {
+            width: 80vw; height: 45vh;
+            background: radial-gradient(ellipse, #16161e 0%, transparent 70%);
+            top: 60%; left: 10%;
+            animation: mistDrift3 22s ease-in-out infinite, mistAppear 5s 1s ease-out forwards;
+        }
+        .mist-layer:nth-child(4) {
+            width: 55vw; height: 30vh;
+            background: radial-gradient(ellipse, #131325 0%, transparent 70%);
+            top: 5%; left: 30%;
+            animation: mistDrift4 16s ease-in-out infinite, mistAppear 5s 3s ease-out forwards;
+        }
+        .mist-layer:nth-child(5) {
+            width: 65vw; height: 38vh;
+            background: radial-gradient(ellipse, #0e0e1a 0%, transparent 70%);
+            top: 35%; left: 55%;
+            animation: mistDrift5 20s ease-in-out infinite, mistAppear 5s 2s ease-out forwards;
+        }
+
+        @keyframes mistAppear {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes mistDrift1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%       { transform: translate(8vw, -5vh) scale(1.08); }
+            66%       { transform: translate(-5vw, 6vh) scale(0.95); }
+        }
+        @keyframes mistDrift2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            40%       { transform: translate(-10vw, 4vh) scale(1.1); }
+            70%       { transform: translate(6vw, -7vh) scale(0.92); }
+        }
+        @keyframes mistDrift3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            30%       { transform: translate(5vw, 8vh) scale(1.05); }
+            60%       { transform: translate(-8vw, -4vh) scale(1.12); }
+        }
+        @keyframes mistDrift4 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%       { transform: translate(-6vw, 9vh) scale(1.06); }
+        }
+        @keyframes mistDrift5 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            45%       { transform: translate(9vw, -6vh) scale(0.96); }
+            80%       { transform: translate(-4vw, 5vh) scale(1.08); }
+        }
+
+        /* ── BACKGROUND LIFT ── */
+        .bg-lift {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 60%, #12121f 0%, #000000 70%);
+            opacity: 0;
+            animation: bgLift 8s 1s ease-out forwards;
             pointer-events: none;
         }
 
-        .mist-float {
-            position: absolute;
-            bottom: 18%;
-            left: -15%;
-            width: 130%;
-            height: 18%;
-            background: linear-gradient(
-                to top,
-                rgba(195,215,244,0.42) 0%,
-                rgba(190,212,240,0.20) 50%,
-                transparent 100%
-            );
-            filter: blur(20px);
-            pointer-events: none;
-            animation: floatMist 26s ease-in-out infinite alternate;
-        }
-
-        .mist-float-2 {
-            position: absolute;
-            bottom: 30%;
-            left: -25%;
-            width: 150%;
-            height: 12%;
-            background: linear-gradient(
-                to top,
-                rgba(185,210,242,0.26) 0%,
-                rgba(180,208,238,0.12) 50%,
-                transparent 100%
-            );
-            filter: blur(24px);
-            pointer-events: none;
-            animation: floatMist 38s ease-in-out infinite alternate-reverse;
-        }
-
-        @keyframes floatMist {
-            0%   { transform: translateX(0%)   scaleY(1);    opacity: 0.70; }
-            50%  { transform: translateX(4%)   scaleY(1.08); opacity: 1;    }
-            100% { transform: translateX(8%)   scaleY(0.94); opacity: 0.80; }
+        @keyframes bgLift {
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         /* ── VIGNETTE ── */
         .vignette {
-            position: absolute;
+            position: fixed;
             inset: 0;
-            background: radial-gradient(
-                ellipse at 50% 45%,
-                transparent 38%,
-                rgba(0,0,0,0.45) 100%
-            );
+            background: radial-gradient(ellipse at center, transparent 40%, #000 100%);
             pointer-events: none;
         }
 
-        /* ── TEXT ── */
-        .text-center {
-            position: absolute;
-            top: 26%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
+        /* ── SYMBOLS (Poseidon · Zeus · Hades) ── */
+        .symbols-wrap {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6vw, 14vw, 180px);
             pointer-events: none;
-            white-space: nowrap;
+            padding: 0 4vw;
+        }
+
+        .symbol-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* generous touch target on mobile */
+            padding: 16px;
             opacity: 0;
-            animation: textFadeIn 3.2s ease-out 0.8s forwards;
-        }
-
-        @keyframes textFadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
-        }
-
-        .main-quote {
-            font-family: 'Cinzel', 'Georgia', serif;
-            font-weight: 400;
-            font-size: clamp(1rem, 2.8vw, 2.3rem);
-            letter-spacing: 0.22em;
-            color: rgba(255,252,235,0.92);
-            text-shadow:
-                0 2px 8px rgba(0,0,0,0.65),
-                0 0 35px rgba(200,150,80,0.28);
-            margin-bottom: 0.55em;
-            line-height: 1.5;
-        }
-
-        .divider {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(0.5rem, 1.1vw, 0.9rem);
-            letter-spacing: 0.7em;
-            color: rgba(255,230,170,0.45);
-            margin-bottom: 0.55em;
-        }
-
-        .sub-quote {
-            font-family: 'Cormorant Garamond', 'Georgia', serif;
-            font-style: italic;
-            font-weight: 300;
-            font-size: clamp(0.85rem, 1.9vw, 1.55rem);
-            letter-spacing: 0.12em;
-            color: rgba(255,240,200,0.70);
-            text-shadow: 0 2px 14px rgba(0,0,0,0.55);
-        }
-
-        /* ── CLICK PROMPT ── */
-        .click-prompt {
-            position: absolute;
-            bottom: 6%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Cinzel', serif;
-            font-size: clamp(0.48rem, 1vw, 0.76rem);
-            letter-spacing: 0.45em;
-            text-transform: uppercase;
-            color: rgba(255,240,200,0.45);
+            transform: translateY(10px);
+            animation: symbolReveal 1.4s 7s ease-out forwards;
+            cursor: pointer;
             pointer-events: none;
-            white-space: nowrap;
-            animation: breathe 3.2s ease-in-out infinite;
-            transition: opacity 1.6s ease;
+            text-decoration: none;
+            transition: transform 0.35s ease, filter 0.35s ease, color 0.35s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        .click-prompt.hide { opacity: 0; }
-
-        @keyframes breathe {
-            0%,100% { opacity: 0.18; }
-            50%      { opacity: 0.62; }
+        .symbol-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            animation: none;
         }
 
-        /* ── FIREFLIES ── */
-        .firefly {
-            position: absolute;
-            border-radius: 50%;
+        @keyframes symbolReveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .symbol-item svg {
+            height: clamp(110px, 16vw, 150px);
+            width: auto;
+            display: block;
+        }
+
+        /* Default dim state */
+        #sym-poseidon { color: #2e3a4a; }
+        #sym-zeus     { color: #3a3620; }
+        #sym-hades    { color: #2e2238; }
+
+        /* Hover — each god's signature colour */
+        #sym-poseidon:hover {
+            color: #72b8d8;
+            filter: drop-shadow(0 0 14px rgba(90, 170, 220, 0.65));
+            transform: translateY(-4px) scale(1.1);
+        }
+        #sym-zeus:hover {
+            color: #e8d472;
+            filter: drop-shadow(0 0 14px rgba(230, 200, 80, 0.65));
+            transform: translateY(-4px) scale(1.1);
+        }
+        #sym-hades:hover {
+            color: #c09ae0;
+            filter: drop-shadow(0 0 14px rgba(175, 120, 230, 0.65));
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        /* ── PAGE TRANSITION – FADE + DIRECTIONAL ZOOM ── */
+        /* Screen fades to black while zooming toward the destination —
+           no visible colour pop, no hard edge, fully cinematic */
+        #trans-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
             pointer-events: none;
-            animation: fireflyRise linear infinite;
+        }
+        #trans-overlay.to-ocean,
+        #trans-overlay.to-sky,
+        #trans-overlay.to-hell  { background: #000; animation: overlayIn 0.9s ease-in forwards; }
+
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
-        @keyframes fireflyRise {
-            0%   { opacity: 0; transform: translateY(0)     translateX(0);   }
-            6%   { opacity: 1; }
-            50%  { opacity: 0.7; transform: translateY(-42vh) translateX(18px); }
-            94%  { opacity: 0.15; }
-            100% { opacity: 0; transform: translateY(-82vh) translateX(-8px); }
-        }
+        /* Body zooms + drifts toward the realm — gives the sense of travel */
+        body.rush-ocean { animation: zoomOcean 0.9s ease-in forwards; }
+        body.rush-sky   { animation: zoomSky   0.9s ease-in forwards; }
+        body.rush-hell  { animation: zoomHell  0.9s ease-in forwards; }
 
-        /* YouTube iframe is injected off-screen via JS on click */
+        @keyframes zoomOcean {
+            from { transform: scale(1)    translateX(0);  }
+            to   { transform: scale(1.18) translateX(8%); }
+        }
+        @keyframes zoomSky {
+            from { transform: scale(1)    translateY(0);  }
+            to   { transform: scale(1.18) translateY(8%); }
+        }
+        @keyframes zoomHell {
+            from { transform: scale(1)    translateY(0);   }
+            to   { transform: scale(1.18) translateY(-8%); }
+        }
     </style>
 </head>
 <body>
 
-<div class="scene" id="scene">
+    <!-- Mist layers -->
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
 
-    <!-- Sky -->
-    <div class="sky"></div>
+    <!-- Subtle background glow lift -->
+    <div class="bg-lift"></div>
 
-    <!-- Twinkling stars (canvas) -->
-    <canvas id="starCanvas"></canvas>
-
-    <!-- Moon -->
-    <div class="moon"></div>
-
-    <!-- ── LAYERED MOUNTAIN SVG ── -->
-    <div class="mountains-wrap">
-        <svg viewBox="0 0 1440 720" preserveAspectRatio="xMidYMax slice"
-             xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="mblur" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="10"/>
-                </filter>
-                <filter id="sblur" x="-10%" y="-10%" width="120%" height="120%">
-                    <feGaussianBlur stdDeviation="3.5"/>
-                </filter>
-            </defs>
-
-            <!-- Layer 1 – farthest, ghostly blue -->
-            <path fill="rgba(152,172,222,0.20)" filter="url(#sblur)"
-                d="M0,432 C70,410 135,378 200,358 C265,338 320,305 382,290
-                   C444,275 505,258 566,250 C627,242 688,246 749,256
-                   C810,266 871,262 932,250 C993,238 1054,230 1115,240
-                   C1176,250 1230,252 1292,260 C1342,267 1400,262 1440,268
-                   L1440,720 L0,720 Z"/>
-
-            <!-- Layer 2 – distant, soft indigo -->
-            <path fill="rgba(108,126,186,0.33)"
-                d="M0,474 C58,448 116,418 185,398 C254,378 315,348 382,330
-                   C449,312 516,296 580,288 C644,280 708,284 772,294
-                   C836,304 900,300 964,288 C1028,276 1092,268 1156,278
-                   C1220,288 1276,294 1340,302 C1388,308 1422,306 1440,312
-                   L1440,720 L0,720 Z"/>
-
-            <!-- Layer 3 – mid-distance, blue-violet -->
-            <path fill="rgba(74,86,148,0.48)"
-                d="M0,508 C50,480 105,452 168,430 C231,408 294,380 360,362
-                   C426,344 492,328 558,318 C624,308 690,311 756,322
-                   C822,333 888,330 954,318 C1020,306 1086,296 1152,307
-                   C1218,318 1275,322 1338,332 C1382,339 1420,337 1440,344
-                   L1440,720 L0,720 Z"/>
-
-            <!-- Valley mist – between layers 3 and 4 -->
-            <path fill="rgba(198,218,242,0.30)" filter="url(#mblur)"
-                d="M0,544 Q160,514 320,540 Q480,566 640,544
-                   Q800,522 960,548 Q1120,574 1280,550 Q1380,537 1440,546
-                   L1440,562 Q1380,555 1280,568 Q1120,590 960,566
-                   Q800,540 640,562 Q480,582 320,558 Q160,532 0,560 Z"/>
-
-            <!-- Layer 4 – mid-near, dark indigo -->
-            <path fill="rgba(46,54,108,0.64)"
-                d="M0,550 C38,520 92,490 150,468 C208,446 268,418 335,400
-                   C402,382 468,364 535,354 C602,344 668,348 735,358
-                   C802,368 868,365 935,353 C1002,341 1068,332 1135,342
-                   C1202,352 1258,358 1322,368 C1370,375 1415,373 1440,380
-                   L1440,720 L0,720 Z"/>
-
-            <!-- Layer 5 – near-dark, deep blue -->
-            <path fill="rgba(26,30,70,0.78)"
-                d="M0,594 C28,564 72,532 122,510 C172,488 226,462 283,444
-                   C340,426 400,410 460,400 C520,390 583,395 646,406
-                   C709,417 772,415 835,403 C898,391 960,382 1022,392
-                   C1084,402 1140,410 1202,420 C1250,428 1308,426 1368,438
-                   L1440,446 L1440,720 L0,720 Z"/>
-
-            <!-- Valley mist – lower band -->
-            <path fill="rgba(193,215,242,0.38)" filter="url(#mblur)"
-                d="M0,618 Q200,592 400,620 Q600,648 800,620
-                   Q1000,592 1200,625 Q1360,648 1440,634
-                   L1440,652 Q1360,666 1200,643 Q1000,610 800,638
-                   Q600,666 400,638 Q200,610 0,636 Z"/>
-
-            <!-- Layer 6 – foreground, near-black -->
-            <path fill="rgba(13,15,40,0.90)"
-                d="M0,640 C24,612 58,582 98,560 C138,538 182,514 230,496
-                   C278,478 328,462 378,452 C428,442 482,448 536,458
-                   C590,468 644,468 698,456 C752,444 805,436 858,446
-                   C911,456 963,465 1016,476 C1069,487 1124,490 1180,484
-                   C1236,478 1292,486 1350,498 C1390,507 1425,506 1440,512
-                   L1440,720 L0,720 Z"/>
-
-            <!-- Layer 7 – darkest foreground ridge -->
-            <path fill="rgba(5,7,20,0.96)"
-                d="M0,676 C33,655 70,634 114,619 C158,604 205,589 253,578
-                   C301,567 352,560 404,556 C456,552 510,560 563,570
-                   C616,580 669,582 722,572 C775,562 828,554 881,564
-                   C934,574 986,582 1038,578 C1090,574 1144,580 1198,592
-                   C1242,601 1298,600 1355,610 L1440,622 L1440,720 L0,720 Z"/>
-        </svg>
-    </div>
-
-    <!-- CSS mist layers -->
-    <div class="mist-base"></div>
-    <div class="mist-float"></div>
-    <div class="mist-float-2"></div>
-
-    <!-- Cinematic vignette -->
+    <!-- Vignette -->
     <div class="vignette"></div>
 
-    <!-- Text -->
-    <div class="text-center">
-        <div class="main-quote">Not all those who wander are lost.</div>
-        <div class="divider">&#10022; &nbsp;&nbsp; &#10022; &nbsp;&nbsp; &#10022;</div>
-        <div class="sub-quote">The mountains are calling, and I must go.</div>
+    <!-- Symbols -->
+    <div class="symbols-wrap">
+
+        <!-- Poseidon – Trident (left) -->
+        <a class="symbol-item" href="mountain.html" id="sym-poseidon">
+            <svg viewBox="0 0 60 130" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <!-- shaft -->
+                <line x1="30" y1="62" x2="30" y2="122"/>
+                <!-- crossguard -->
+                <line x1="12" y1="76" x2="48" y2="76"/>
+                <!-- centre prong -->
+                <line x1="30" y1="62" x2="30" y2="10"/>
+                <polyline points="24,24 30,10 36,24"/>
+                <!-- left prong -->
+                <line x1="12" y1="76" x2="12" y2="28"/>
+                <polyline points="7,41 12,28 17,41"/>
+                <!-- right prong -->
+                <line x1="48" y1="76" x2="48" y2="28"/>
+                <polyline points="43,41 48,28 53,41"/>
+            </svg>
+        </a>
+
+        <!-- Zeus – Lightning Bolt (centre) -->
+        <a class="symbol-item" href="mountain.html" id="sym-zeus">
+            <svg viewBox="0 0 54 100" fill="currentColor">
+                <polygon points="36,4 14,52 28,52 18,96 46,44 30,44 48,4"/>
+            </svg>
+        </a>
+
+        <!-- Hades – Skull (right) -->
+        <a class="symbol-item" href="mountain.html" id="sym-hades">
+            <svg viewBox="0 0 80 92" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <!-- cranium -->
+                <path d="M40,10 C20,10 12,26 12,44 C12,59 19,67 27,72 L27,82 L53,82 L53,72 C61,67 68,59 68,44 C68,26 60,10 40,10 Z"/>
+                <!-- left eye socket -->
+                <ellipse cx="28" cy="44" rx="9" ry="10"/>
+                <!-- right eye socket -->
+                <ellipse cx="52" cy="44" rx="9" ry="10"/>
+                <!-- nose -->
+                <path d="M36,61 L40,55 L44,61 Z"/>
+                <!-- teeth dividers -->
+                <line x1="36" y1="72" x2="36" y2="82"/>
+                <line x1="44" y1="72" x2="44" y2="82"/>
+            </svg>
+        </a>
+
     </div>
 
-    <!-- Subtle click-to-start hint -->
-    <div class="click-prompt" id="clickPrompt">&#10022; &nbsp; touch anywhere to begin &nbsp; &#10022;</div>
+    <!-- Page transition overlay -->
+    <div id="trans-overlay"></div>
 
-</div><!-- /.scene -->
+    <script>
+        const routes = {
+            'sym-poseidon': { ovl: 'to-ocean', body: 'rush-ocean', href: 'poseidon.html' },
+            'sym-zeus':     { ovl: 'to-sky',   body: 'rush-sky',   href: 'zeus.html'     },
+            'sym-hades':    { ovl: 'to-hell',  body: 'rush-hell',  href: 'hades.html'    }
+        };
 
-<script>
-/* ══════════════════════════════════════
-   TWINKLING STAR CANVAS
-══════════════════════════════════════ */
-(function () {
-    const canvas = document.getElementById('starCanvas');
-    const ctx    = canvas.getContext('2d');
-    let   stars  = [];
+        const overlay = document.getElementById('trans-overlay');
 
-    function init() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight * 0.65;
-        stars = Array.from({ length: 210 }, () => ({
-            x:    Math.random() * canvas.width,
-            y:    Math.random() * canvas.height,
-            r:    0.4 + Math.random() * 1.5,
-            base: 0.22 + Math.random() * 0.65,
-            spd:  0.35 + Math.random() * 1.8,
-            ph:   Math.random() * Math.PI * 2
-        }));
-    }
+        // When the browser restores this page from bfcache (back button),
+        // the transition classes are still applied — wipe them so the page is visible.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                overlay.className = '';
+                overlay.style.pointerEvents = 'none';
+                document.body.classList.remove('rush-ocean', 'rush-sky', 'rush-hell');
+            }
+        });
 
-    function draw(ts) {
-        const t = ts / 1000;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (const s of stars) {
-            const op = s.base * (0.5 + 0.5 * Math.sin(t * s.spd + s.ph));
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,252,240,${op.toFixed(3)})`;
-            ctx.fill();
-        }
-        requestAnimationFrame(draw);
-    }
+        document.querySelectorAll('.symbol-item').forEach(el => {
+            // Enable clicks after reveal animation
+            el.addEventListener('animationend', () => el.classList.add('visible'));
 
-    init();
-    requestAnimationFrame(draw);
-    window.addEventListener('resize', init);
-})();
-
-/* ══════════════════════════════════════
-   FIREFLIES
-══════════════════════════════════════ */
-(function () {
-    const scene = document.getElementById('scene');
-
-    function spawn() {
-        const el  = document.createElement('div');
-        el.className = 'firefly';
-        const sz  = 1.5 + Math.random() * 2.5;
-        const dur = 18 + Math.random() * 22;
-        el.style.cssText = [
-            `width:${sz}px`,
-            `height:${sz}px`,
-            `left:${5 + Math.random() * 90}%`,
-            `bottom:${5 + Math.random() * 28}%`,
-            `background:rgba(255,${185 + Math.random() * 55 | 0},80,0.82)`,
-            `box-shadow:0 0 ${sz * 3}px ${sz}px rgba(255,210,80,0.48)`,
-            `animation-duration:${dur}s`,
-            `animation-delay:${(Math.random() * -dur).toFixed(1)}s`
-        ].join(';');
-        scene.appendChild(el);
-        setTimeout(() => el.remove(), (dur + 5) * 1000);
-    }
-
-    for (let i = 0; i < 14; i++) setTimeout(spawn, i * 400);
-    setInterval(spawn, 3200);
-})();
-
-/* ══════════════════════════════════════
-   YOUTUBE BACKGROUND AUDIO
-   Plain iframe – no IFrame JS API.
-   The JS API (iframe_api) communicates via
-   postMessage to 'https://youtube.com', but
-   when the page is opened from disk the parent
-   origin is null, causing the error you saw.
-   Dropping the API and building the iframe
-   directly inside a click handler fixes this:
-   the browser treats it as a user-gesture
-   autoplay and allows it.
-══════════════════════════════════════ */
-(function () {
-    let   started = false;
-    const prompt  = document.getElementById('clickPrompt');
-
-    function startMusic() {
-        if (started) return;
-        started = true;
-
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = [
-            'position:fixed',
-            'top:-1000px',
-            'left:-1000px',
-            'width:320px',   /* non-trivial size so YT actually plays */
-            'height:180px',
-            'opacity:0',
-            'pointer-events:none',
-            'border:0'
-        ].join(';');
-        iframe.allow = 'autoplay; encrypted-media';
-        iframe.src =
-            'https://www.youtube.com/embed/sJRPPUr1yic' +
-            '?autoplay=1&loop=1&playlist=sJRPPUr1yic' +
-            '&controls=0&disablekb=1&fs=0' +
-            '&iv_load_policy=3&modestbranding=1&rel=0';
-
-        document.body.appendChild(iframe);
-        prompt.classList.add('hide');
-    }
-
-    const scene = document.getElementById('scene');
-    scene.addEventListener('click', startMusic);
-    scene.addEventListener('touchend', function (e) {
-        e.preventDefault();
-        startMusic();
-    }, { passive: false });
-})();
-</script>
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                const { ovl, body, href } = routes[this.id];
+                overlay.className = ovl;
+                overlay.style.pointerEvents = 'all';
+                document.body.classList.add(body);   // zoom toward destination
+                setTimeout(() => { window.location.href = href; }, 880);
+            });
+        });
+    </script>
 </body>
 </html>
