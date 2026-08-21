@@ -265,7 +265,7 @@
             100% { opacity: 0; transform: translateY(-82vh) translateX(-8px); }
         }
 
-        /* YouTube iframe is injected off-screen via JS on click */
+        /* Background audio plays via HTML5 Audio on user gesture or autoplay */
 
         /* ── TOUCH ── */
         #scene { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
@@ -383,12 +383,18 @@
         <div class="main-quote">To see the world, things dangerous to come to,<br>to see behind walls, draw closer,<br>to find each other, and to feel.<br>That is the purpose of life.</div>
     </div>
 
-    <!-- Subtle click-to-start hint -->
-    <div class="click-prompt" id="clickPrompt">&#10022; &nbsp; touch anywhere to begin &nbsp; &#10022;</div>
 
 </div><!-- /.scene -->
 
 <script>
+/* ── ACCESS GATE ── */
+(function () {
+    const key = sessionStorage.getItem('mt_key');
+    if (key !== '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4') {
+        window.location.replace('index.html');
+    }
+})();
+
 /* ══════════════════════════════════════
    TWINKLING STAR CANVAS
 ══════════════════════════════════════ */
@@ -458,57 +464,30 @@
 })();
 
 /* ══════════════════════════════════════
-   YOUTUBE BACKGROUND AUDIO
-   Plain iframe – no IFrame JS API.
-   The JS API (iframe_api) communicates via
-   postMessage to 'https://youtube.com', but
-   when the page is opened from disk the parent
-   origin is null, causing the error you saw.
-   Dropping the API and building the iframe
-   directly inside a click handler fixes this:
-   the browser treats it as a user-gesture
-   autoplay and allows it.
+   BACKGROUND AUDIO (local MP3)
 ══════════════════════════════════════ */
 (function () {
-    let   started = false;
-    const prompt  = document.getElementById('clickPrompt');
+    const audio = new Audio('Resources/WakeUp.mp3');
+    audio.loop = true;
 
-    function startMusic() {
-        if (started) return;
-        started = true;
-
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = [
-            'position:fixed',
-            'top:-1000px',
-            'left:-1000px',
-            'width:320px',   /* non-trivial size so YT actually plays */
-            'height:180px',
-            'opacity:0',
-            'pointer-events:none',
-            'border:0'
-        ].join(';');
-        iframe.allow = 'autoplay; encrypted-media';
-        iframe.src =
-            'https://www.youtube.com/embed/sJRPPUr1yic' +
-            '?autoplay=1&loop=1&playlist=sJRPPUr1yic' +
-            '&controls=0&disablekb=1&fs=0' +
-            '&iv_load_policy=3&modestbranding=1&rel=0';
-
-        document.body.appendChild(iframe);
-        prompt.classList.add('hide');
-
+    function scheduleQuote() {
         setTimeout(function () {
             document.getElementById('quoteText').classList.add('visible');
-        }, 10000);
+        }, 14000);
     }
 
-    const scene = document.getElementById('scene');
-    scene.addEventListener('click', startMusic);
-    scene.addEventListener('touchend', function (e) {
-        e.preventDefault();
-        startMusic();
-    }, { passive: false });
+    setTimeout(function () {
+        audio.play().then(scheduleQuote).catch(function () {
+            // Autoplay blocked — wait for first user gesture
+            function onGesture() {
+                audio.play().then(scheduleQuote);
+                document.removeEventListener('click', onGesture);
+                document.removeEventListener('touchstart', onGesture);
+            }
+            document.addEventListener('click', onGesture);
+            document.addEventListener('touchstart', onGesture);
+        });
+    }, 2000);
 })();
 </script>
 </body>

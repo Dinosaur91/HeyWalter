@@ -163,6 +163,11 @@
             display: block;
         }
 
+        @media (max-width: 600px) {
+            .symbol-item svg { height: 75px; }
+            .symbols-wrap    { gap: clamp(6vw, 10vw, 50px); }
+        }
+
         /* Default dim state */
         #sym-poseidon { color: #2e3a4a; }
         #sym-zeus     { color: #3a3620; }
@@ -241,7 +246,7 @@
     <div class="symbols-wrap">
 
         <!-- Poseidon – Trident (left) -->
-        <a class="symbol-item" href="mountain.html" id="sym-poseidon">
+        <a class="symbol-item" href="#" id="sym-poseidon">
             <svg viewBox="0 0 60 130" fill="none" stroke="currentColor" stroke-width="2.2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <!-- shaft -->
@@ -261,14 +266,14 @@
         </a>
 
         <!-- Zeus – Lightning Bolt (centre) -->
-        <a class="symbol-item" href="mountain.html" id="sym-zeus">
+        <a class="symbol-item" href="#" id="sym-zeus">
             <svg viewBox="0 0 54 100" fill="currentColor">
                 <polygon points="36,4 14,52 28,52 18,96 46,44 30,44 48,4"/>
             </svg>
         </a>
 
         <!-- Hades – Skull (right) -->
-        <a class="symbol-item" href="mountain.html" id="sym-hades">
+        <a class="symbol-item" href="#" id="sym-hades">
             <svg viewBox="0 0 80 92" fill="none" stroke="currentColor" stroke-width="2.2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <!-- cranium -->

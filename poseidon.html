@@ -258,7 +258,9 @@
         }
 
         @media (max-width: 600px) {
-            .door-frame   { width: clamp(200px, 82vw, 280px); }
+            .door-frame   { width: clamp(170px, 72vw, 230px); }
+            .door-arch    { height: 88px; }
+            .door-body    { padding: 16px 20px 20px; gap: 12px; }
             .door-proceed { font-size: 0.70rem; letter-spacing: 0.28em; padding: 0.65em 1.8em; }
         }
     </style>
@@ -413,12 +415,15 @@
         const doorError   = document.getElementById('doorError');
         const doorProceed = document.getElementById('doorProceed');
 
-        function tryEnter() {
-            if (doorInput.value === '1234') {
+        async function tryEnter() {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(doorInput.value));
+            const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+            if (hex === '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4') {
+                sessionStorage.setItem('mt_key', hex);
                 const exit = document.getElementById('exit-overlay');
                 exit.style.opacity = '1';
                 exit.style.pointerEvents = 'all';
-                setTimeout(() => { window.location.href = 'mountain.html'; }, 750);
+                setTimeout(() => { window.location.href = 'wander.html'; }, 750);
             } else {
                 doorInput.classList.remove('shake');
                 void doorInput.offsetWidth;
